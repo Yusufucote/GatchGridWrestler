@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: MenuController_SlideIn_SlideOut
+  m_Controller: {fileID: 9100000, guid: 16c84242e82264f49b167b0e53502513, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 05b81298329db4c35b691e59a29ea053, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 05b81298329db4c35b691e59a29ea053, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 30c10fafa59c04459ba5d84195f0aac6, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 30c10fafa59c04459ba5d84195f0aac6, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 4840bc3cd509941c59f876ebe9fdd770, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: ccff7a3241ff6794ebe08efa58febd5b, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 742abcf46e64641fb8bb99fd988dbde3, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: e64ff2f1826db9a418bacd439d02ce14, type: 2}
