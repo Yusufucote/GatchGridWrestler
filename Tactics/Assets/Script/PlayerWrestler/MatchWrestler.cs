@@ -10,9 +10,11 @@ namespace PlayerWrestler {
 		private Proto_WrestlerData baseWrestlerData;
 
 		public EventHandler<WrestlerSpeedUpdatedEventArgs> SpeedUpdated;
-		public EventHandler<MatchWresterGenericEventArgs> MyTurn;
+		public EventHandler<MatchWresterGenericEventArgs> ReadyForMyTurn;
+		public EventHandler<MatchWresterGenericEventArgs> TurnStarted;
 		public EventHandler<MatchWresterGenericEventArgs> EndTurn;
 		public EventHandler<MatchWresterGenericEventArgs> WrestlerInitialized;
+		public EventHandler<MatchWresterGenericEventArgs> ImSelected;
 
 		public float CurrentAgility {
 			get {
@@ -60,8 +62,14 @@ namespace PlayerWrestler {
 		}
 
 		private void SendMyTurnEvent() {
-			if (MyTurn != null) {
-				MyTurn(this, new MatchWresterGenericEventArgs() { wrestler = this });
+			if (ReadyForMyTurn != null) {
+				ReadyForMyTurn(this, new MatchWresterGenericEventArgs() { wrestler = this });
+			}
+		}
+
+		public void StartTurn() {
+			if (TurnStarted != null) {
+				TurnStarted(this, new MatchWresterGenericEventArgs() { wrestler = this });
 			}
 		}
 

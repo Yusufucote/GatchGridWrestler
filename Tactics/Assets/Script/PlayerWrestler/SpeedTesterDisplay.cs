@@ -21,9 +21,22 @@ namespace WrestlingMatch {
 		[SerializeField]
 		Gradient fillerColor;
 
+		[SerializeField]
+		Color wrestlersTurnColor;
+
 		private void Awake() {			
 			matchWrestler.SpeedUpdated += HandleWrestlerSpeedUpdated;
 			matchWrestler.WrestlerInitialized += HandleWrestlerInitialized;
+			matchWrestler.TurnStarted += HandleTurnStarted;
+			matchWrestler.EndTurn += HandleEndTurn;
+		}
+
+		private void HandleEndTurn(object sender, MatchWresterGenericEventArgs e) {
+			speedFillBar.color = fillerColor.Evaluate(0);
+		}
+
+		private void HandleTurnStarted(object sender, MatchWresterGenericEventArgs e) {
+			speedFillBar.color = wrestlersTurnColor;
 		}
 
 		private void HandleWrestlerInitialized(object sender, MatchWresterGenericEventArgs e) {
