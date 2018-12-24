@@ -14,7 +14,10 @@ namespace PlayerWrestler {
 		public EventHandler<MatchWresterGenericEventArgs> TurnStarted;
 		public EventHandler<MatchWresterGenericEventArgs> EndTurn;
 		public EventHandler<MatchWresterGenericEventArgs> WrestlerInitialized;
-		public EventHandler<MatchWresterGenericEventArgs> ImSelected;
+
+		public EventHandler<MatchWresterGenericEventArgs> IsSelected;
+		public EventHandler<MatchWresterGenericEventArgs> IsTargeted;
+		public EventHandler<MatchWresterGenericEventArgs> UnTargeted;
 
 		public float CurrentAgility {
 			get {
@@ -51,6 +54,24 @@ namespace PlayerWrestler {
 			}
 			speedBank = 0;
 			SendSpeedUpdatedEvent();
+		}
+
+		public void BeTargeted() {
+			if (IsTargeted != null) {
+				IsTargeted(this, new MatchWresterGenericEventArgs() { wrestler = this });
+			}
+		}
+
+		public void BeUnTargeted() {
+			if (UnTargeted != null) {
+				UnTargeted(this, new MatchWresterGenericEventArgs() { wrestler = this });
+			}
+		}
+
+		public void SendIsSelectedEventArgs() {
+			if (IsSelected != null) {
+				IsSelected(this, new MatchWresterGenericEventArgs() { wrestler = this });
+			}
 		}
 
 		private void HandleSpeedUpdated(object sender, EventArgs e) {

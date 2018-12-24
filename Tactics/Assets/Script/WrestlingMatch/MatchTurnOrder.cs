@@ -10,7 +10,8 @@ namespace WrestlingMatch {
 		List<MatchWrestler> turnOrder = new List<MatchWrestler>();
 
 		public EventHandler<MatchWresterGenericEventArgs> NewWrestlersTurn;
-		public EventHandler<EventArgs> TurnsDone;
+		public EventHandler<EventArgs> CurrentTurnDone;
+		public EventHandler<EventArgs> TurnSequenceDone;
 
 		public void AddWrestlerToTurnQue(MatchWrestler wrestler) {
 			turnOrder.Add(wrestler);
@@ -31,12 +32,15 @@ namespace WrestlingMatch {
 		public void EndCurrentTurn() {
 			turnOrder[0].EndTurnMyTurn();
 			turnOrder.RemoveAt(0);
+			if (CurrentTurnDone != null) {
+				CurrentTurnDone(this, EventArgs.Empty);
+			}
 			if (turnOrder.Count > 0) {
 				NextTurn();
 			}
 			else {
-				if (TurnsDone != null) {
-					TurnsDone(this, EventArgs.Empty);
+				if (TurnSequenceDone != null) {
+					TurnSequenceDone(this, EventArgs.Empty);
 				}
 			}
 		}
