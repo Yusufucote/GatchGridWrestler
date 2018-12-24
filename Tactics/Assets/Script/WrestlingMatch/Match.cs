@@ -16,20 +16,38 @@ namespace WrestlingMatch {
 		[SerializeField]
 		MatchTurnOrder turnOrder;
 
+		[SerializeField]
+		InMatchWrestlingTargetDeterminator targetDeterminator;
+
 		private Dictionary<string, MatchWrestler> matchMrestlers = new Dictionary<string, MatchWrestler>();
+		public Dictionary<string, MatchWrestler> MatchMrestlers {
+			get {
+				return matchMrestlers;
+			}
+		}
+
 		private bool someonesTurn;
 		
 		Coroutine turnStarter;
 
 		public EventHandler<EventArgs> UpdateSpeed;
+		public EventHandler<MatchWrestlerRosterEventArgs> WrestlerRosterUpated;
 
 		void Start() {
-			turnOrder.TurnsDone += HandleTurnsDone;
+			turnOrder.TurnSequenceDone += HandleTurnsDone;
 			foreach (var wrestler in wrestlers) {
 				MatchWrestler matchWrestler = wrestlerFactory.InstantiateWrester(wrestler);
 				matchMrestlers.Add(matchWrestler.GetHashCode().ToString(), matchWrestler);
 				matchWrestler.InitializeWrestler(this, wrestler);
 				RegisterForWrestlerEvents(matchWrestler);
+			}
+			SendRosterUpdatedEventArgs();
+			targetDeterminator.Initialize(matchMrestlers);
+		}
+
+		private void SendRosterUpdatedEventArgs() {
+			if (WrestlerRosterUpated != null) {
+				WrestlerRosterUpated(this, new MatchWrestlerRosterEventArgs() { Wrestlers = matchMrestlers });
 			}
 		}
 
@@ -68,5 +86,9 @@ namespace WrestlingMatch {
 		private void HandleTurnsDone(object sender, EventArgs e) {
 			someonesTurn = false;
 		}
+	}
+
+	public class MatchWrestlerRosterEventArgs: EventArgs {
+		public Dictionary<string, MatchWrestler> Wrestlers;
 	}
 }
