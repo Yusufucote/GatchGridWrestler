@@ -42,7 +42,7 @@ namespace WrestlingMatch {
 		}
 
 		private void RegisterForWrestlerEvents(MatchWrestler matchWrestler) {
-			matchWrestler.MyTurn += HandleWrestlerTurn;
+			matchWrestler.ReadyForMyTurn += HandleWrestlerTurn;
 			matchWrestler.EndTurn += HandleWrestlerEndTurn;
 		}
 

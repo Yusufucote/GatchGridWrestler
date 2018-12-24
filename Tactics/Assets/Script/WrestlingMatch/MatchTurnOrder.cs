@@ -25,6 +25,7 @@ namespace WrestlingMatch {
 			if (NewWrestlersTurn != null) {
 				NewWrestlersTurn(this, new MatchWresterGenericEventArgs() { wrestler = turnOrder[0] });
 			}
+			turnOrder[0].StartTurn();
 		}
 
 		public void EndCurrentTurn() {
