@@ -15,6 +15,16 @@ namespace WrestlingMatch {
 
 		public void AddWrestlerToTurnQue(MatchWrestler wrestler) {
 			turnOrder.Add(wrestler);
+			wrestler.LostSpeed += HandleWrestlerLostSpeed;
+		}
+
+		private void HandleWrestlerLostSpeed(object sender, MatchWresterGenericEventArgs e) {
+			if (turnOrder.Count > 1) {
+				turnOrder.Remove(e.wrestler);
+			}
+			else {
+				EndCurrentTurn();
+			}
 		}
 
 		public void StartTurnSequance() {

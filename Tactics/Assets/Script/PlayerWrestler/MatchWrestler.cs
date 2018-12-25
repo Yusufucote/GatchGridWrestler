@@ -20,8 +20,10 @@ namespace PlayerWrestler {
 
 		public EventHandler<EventArgs> UpdateSpeed;
 		public EventHandler<MatchWresterGenericEventArgs> ReadyForMyTurn;
+		public EventHandler<MatchWresterGenericEventArgs> LostSpeed;
 		public EventHandler<MatchWresterGenericEventArgs> TurnStarted;
 		public EventHandler<MatchWresterGenericEventArgs> EndTurn;
+
 		public EventHandler<MatchWresterGenericEventArgs> WrestlerInitialized;
 
 		public EventHandler<MatchWresterGenericEventArgs> IsSelected;
@@ -100,6 +102,12 @@ namespace PlayerWrestler {
 		public void SendMyTurnEvent() {
 			if (ReadyForMyTurn != null) {
 				ReadyForMyTurn(this, new MatchWresterGenericEventArgs() { wrestler = this });
+			}
+		}
+
+		public void SendLostSpeedEvent() {
+			if (LostSpeed != null) {
+				LostSpeed(this, new MatchWresterGenericEventArgs() { wrestler = this });
 			}
 		}
 

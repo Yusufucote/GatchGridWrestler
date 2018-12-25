@@ -27,13 +27,16 @@ namespace PlayerWrestler {
 		}
 
 		public void SetSpeedPoolValue(float value) {
-
 			if (value < 0) {
 				value = 0;
 			}
 			else if (value > 100) {
 				value = 100;
 			}
+			if (value < speedPool) {
+				wrestler.SendLostSpeedEvent();
+			}
+			
 			speedPool = value;
 			SendSpeedUpdatedEvent();
 		}
