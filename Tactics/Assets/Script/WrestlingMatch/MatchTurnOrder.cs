@@ -15,6 +15,16 @@ namespace WrestlingMatch {
 
 		public void AddWrestlerToTurnQue(MatchWrestler wrestler) {
 			turnOrder.Add(wrestler);
+			wrestler.LostSpeed += HandleWrestlerLostSpeed;
+		}
+
+		private void HandleWrestlerLostSpeed(object sender, MatchWresterGenericEventArgs e) {
+			if (turnOrder.Count > 1) {
+				turnOrder.Remove(e.wrestler);
+			}
+			else {
+				EndCurrentTurn();
+			}
 		}
 
 		public void StartTurnSequance() {
@@ -30,17 +40,19 @@ namespace WrestlingMatch {
 		}
 
 		public void EndCurrentTurn() {
-			turnOrder[0].EndTurnMyTurn();
-			turnOrder.RemoveAt(0);
-			if (CurrentTurnDone != null) {
-				CurrentTurnDone(this, EventArgs.Empty);
-			}
 			if (turnOrder.Count > 0) {
-				NextTurn();
-			}
-			else {
-				if (TurnSequenceDone != null) {
-					TurnSequenceDone(this, EventArgs.Empty);
+				turnOrder[0].EndTurnMyTurn();
+				turnOrder.RemoveAt(0);
+				if (CurrentTurnDone != null) {
+					CurrentTurnDone(this, EventArgs.Empty);
+				}
+				if (turnOrder.Count > 0) {
+					NextTurn();
+				}
+				else {
+					if (TurnSequenceDone != null) {
+						TurnSequenceDone(this, EventArgs.Empty);
+					}
 				}
 			}
 		}

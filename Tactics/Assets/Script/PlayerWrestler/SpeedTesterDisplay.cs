@@ -10,6 +10,9 @@ namespace WrestlingMatch {
 		MatchWrestler matchWrestler;
 
 		[SerializeField]
+		MatchWrestlerSpeedPoolHandler speedPoolHandler;
+
+		[SerializeField]
 		Text nameText;
 
 		[SerializeField]
@@ -25,10 +28,10 @@ namespace WrestlingMatch {
 		Color wrestlersTurnColor;
 
 		private void Awake() {			
-			matchWrestler.SpeedUpdated += HandleWrestlerSpeedUpdated;
 			matchWrestler.WrestlerInitialized += HandleWrestlerInitialized;
 			matchWrestler.TurnStarted += HandleTurnStarted;
 			matchWrestler.EndTurn += HandleEndTurn;
+			speedPoolHandler.SpeedUpdated += HandleWrestlerSpeedUpdated;
 		}
 
 		private void HandleEndTurn(object sender, MatchWresterGenericEventArgs e) {
@@ -57,10 +60,5 @@ namespace WrestlingMatch {
 			speedFillBar.color = fillerColor.Evaluate(speed / 100);
 		}
 
-		private void OnDestroy() {
-			if (matchWrestler != null) {
-				matchWrestler.SpeedUpdated -= HandleWrestlerSpeedUpdated;
-			}
-		}
 	}
 }
