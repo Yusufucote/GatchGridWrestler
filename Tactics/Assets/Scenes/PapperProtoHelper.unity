@@ -1609,42 +1609,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wrestlers:
-  - Name: Yus
-    Agility: 5
-    Hp: 20
-    Move: 2
-    Defense: 3
-    Strength: 7
-  - Name: Doc
-    Agility: 3
-    Hp: 25
-    Move: 2
-    Defense: 7
-    Strength: 5
-  - Name: Toki
-    Agility: 3
-    Hp: 20
-    Move: 2
-    Defense: 5
-    Strength: 7
-  - Name: Patch
-    Agility: 5
-    Hp: 20
-    Move: 2
-    Defense: 7
-    Strength: 5
-  - Name: Foxy Q
-    Agility: 3
-    Hp: 20
-    Move: 2
-    Defense: 8
-    Strength: 6
-  - Name: Zander
-    Agility: 2
-    Hp: 20
-    Move: 2
-    Defense: 7
-    Strength: 7
+  - {fileID: 11400000, guid: 64c124fa8e7decd42be90df145d03733, type: 2}
+  - {fileID: 11400000, guid: b311061de09493148847a2c201b8553a, type: 2}
+  - {fileID: 11400000, guid: 0fa36bed389d8594890b4a9cd4f7a134, type: 2}
+  - {fileID: 11400000, guid: efb9cf6c121dbc94a9aa8332f770cd41, type: 2}
+  - {fileID: 11400000, guid: 67ddab3d73313534194be3ce49bc4cc7, type: 2}
+  - {fileID: 11400000, guid: a3fe905de7c75f64397080eefdd2f4c0, type: 2}
   wrestlerFactory: {fileID: 1935278099}
   turnOrder: {fileID: 1470392237}
   targetDeterminator: {fileID: 1470392238}

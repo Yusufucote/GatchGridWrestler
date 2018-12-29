@@ -16,7 +16,7 @@ namespace PlayerWrestler {
 		MatchWrestlerActionHandler actionHandler;
 
 		private float speedBank;
-		private Proto_WrestlerData baseWrestlerData;
+		private WrestlerData baseWrestlerData;
 
 		public EventHandler<EventArgs> UpdateSpeed;
 		public EventHandler<MatchWresterGenericEventArgs> ReadyForMyTurn;
@@ -56,7 +56,7 @@ namespace PlayerWrestler {
 			}
 		}
 
-		public void InitializeWrestler(Match proto_SpeedTester, Proto_WrestlerData wrestlerData) {
+		public void InitializeWrestler(Match proto_SpeedTester, WrestlerData wrestlerData) {
 			proto_SpeedTester.UpdateSpeed += HandleSpeedUpdated;
 			baseWrestlerData = wrestlerData;
 			agilityHandler.Initialize(wrestlerData.Agility);
