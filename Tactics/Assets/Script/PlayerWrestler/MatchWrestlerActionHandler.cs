@@ -12,6 +12,9 @@ namespace PlayerWrestler {
 				case MatchActionType.ChangeSpeedPoolByPercentOfTotal:
 					changeSpeedPoolByPercentOfTotal.HandleAction(matchAction.value);
 					break;
+				case MatchActionType.SpeedDebuff:
+
+					break;
 				default:
 					break;
 			}

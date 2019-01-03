@@ -13,7 +13,7 @@ namespace PlayerWrestler{
 	}
 
 	public enum MatchActionType  {
-		ChangeSpeedPoolByPercentOfTotal 
+		ChangeSpeedPoolByPercentOfTotal, SpeedDebuff 
 	}
 }
 
