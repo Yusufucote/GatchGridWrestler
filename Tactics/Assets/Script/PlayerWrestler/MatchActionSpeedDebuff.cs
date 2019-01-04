@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace PlayerWrestler {
-	public class MatchActionSpeedDebuff : MonoBehaviour {
+	public class MatchActionSpeedDebuff : AbstractMatchActionHandler {
 
 		[SerializeField]
 		MatchWrestlerAgilityHandler agilityHandler;
@@ -11,17 +11,20 @@ namespace PlayerWrestler {
 
 		public EventHandler<IncermentalMatchActionEventArgs> speedDebuffUpdated;
 
-		public void HandleAction(float value) {
-			if (value > 0) {
-				if (debuffCount < value) {
-					debuffCount = (int)value;
-					SendSpeedDebuffUpdated();
-				}
-				agilityHandler.SetDebuffed(true);
-			}
+		private void Start() {
+			actionHandler.TurnStarted += HandleTurnStarted;
 		}
 
-		//TODO: Need to determin when debuff should fade.
+		private void HandleTurnStarted(object sender, MatchWresterGenericEventArgs e) {
+			if (debuffCount > 0) {
+				debuffCount -= debuffCount;
+				SendSpeedDebuffUpdated();
+				if (debuffCount == 0) {
+					agilityHandler.SetDebuffed(false);
+					actionHandler.SendMatchActionComplete(new MatchAciton(MatchActionType.SpeedDebuff, 0));
+				}
+			}
+		}
 
 		private void SendSpeedDebuffUpdated (){
 			if (speedDebuffUpdated != null) {
@@ -29,6 +32,17 @@ namespace PlayerWrestler {
 					ActionType = MatchActionType.SpeedDebuff, 
 					Count = debuffCount
 				});
+			}
+		}
+
+		public override void HandleActionRecieved(object sender, MatchWrestlerActionRecievedEventArgs e) {
+			int value = (int) e.matchAciton.value;
+			if (value > 0) {
+				if (debuffCount < value) {
+					debuffCount = value;
+					SendSpeedDebuffUpdated();
+				}
+				agilityHandler.SetDebuffed(true);
 			}
 		}
 	}

@@ -45,7 +45,7 @@ namespace PlayerWrestler {
 			speedPool += agilityHandler.CurrentAgility;
 			SendSpeedUpdatedEvent();
 			if (speedPool >= 100) {
-				wrestler.SendMyTurnEvent();
+				wrestler.SendReadyForMyTurnEvent();
 			}
 		}
 
