@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace PlayerWrestler {
-	public class MatchActionChangeSpeedPoolByPercentOfTotal : MonoBehaviour {
+	public class MatchActionChangeSpeedPoolByPercentOfTotal : AbstractMatchActionHandler {
 
 		[SerializeField]
 		MatchWrestlerSpeedPoolHandler speedPoolHandler;
 
-		public void HandleAction(float value) {
-			float newSpeedPoolValue = speedPoolHandler.CurrentSpeedPool + value;
-			speedPoolHandler.SetSpeedPoolValue(newSpeedPoolValue);
+		public override void HandleActionRecieved(object sender, MatchWrestlerActionRecievedEventArgs e) {
+			if (e.matchAciton.acitonType == MatchActionType.ChangeSpeedPoolByPercentOfTotal) {
+				float newSpeedPoolValue = speedPoolHandler.CurrentSpeedPool + e.matchAciton.value;
+				speedPoolHandler.SetSpeedPoolValue(newSpeedPoolValue);
+				actionHandler.SendMatchActionComplete(new MatchAciton(MatchActionType.ChangeSpeedPoolByPercentOfTotal, 0));
+			}
 		}
-
 	}
 }

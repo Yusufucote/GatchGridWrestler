@@ -8,7 +8,7 @@ namespace WrestlingMatch {
 	public class Match : MonoBehaviour {
 
 		[SerializeField]
-		List<Proto_WrestlerData> wrestlers;
+		List<WrestlerDataScriptableObject> wrestlers;
 
 		[SerializeField]
 		WrestlerFactory wrestlerFactory;
@@ -35,10 +35,10 @@ namespace WrestlingMatch {
 
 		void Start() {
 			turnOrder.TurnSequenceDone += HandleTurnsDone;
-			foreach (var wrestler in wrestlers) {
-				MatchWrestler matchWrestler = wrestlerFactory.InstantiateWrester(wrestler);
+			foreach (var wrestlerSO in wrestlers) {
+				MatchWrestler matchWrestler = wrestlerFactory.InstantiateWrester(wrestlerSO.wrestlerData);
 				matchMrestlers.Add(matchWrestler.GetHashCode().ToString(), matchWrestler);
-				matchWrestler.InitializeWrestler(this, wrestler);
+				matchWrestler.InitializeWrestler(this, wrestlerSO.wrestlerData);
 				RegisterForWrestlerEvents(matchWrestler);
 			}
 			SendRosterUpdatedEventArgs();

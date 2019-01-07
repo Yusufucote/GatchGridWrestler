@@ -10,7 +10,7 @@ namespace WrestlingMatch {
 		[SerializeField]
 		Transform wrestlerParent;
 
-		public MatchWrestler InstantiateWrester(Proto_WrestlerData wrestlerData) {
+		public MatchWrestler InstantiateWrester(WrestlerData wrestlerData) {
 			MatchWrestler matchWrestler = Instantiate(wrestlerPrefab);
 			matchWrestler.transform.SetParent(wrestlerParent);
 			matchWrestler.transform.localScale = Vector3.one;

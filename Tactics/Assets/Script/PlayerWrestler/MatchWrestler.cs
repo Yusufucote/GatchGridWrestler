@@ -12,11 +12,8 @@ namespace PlayerWrestler {
 		[SerializeField]
 		MatchWrestlerSpeedPoolHandler speedPoolHandler;
 
-		[SerializeField]
-		MatchWrestlerActionHandler actionHandler;
-
 		private float speedBank;
-		private Proto_WrestlerData baseWrestlerData;
+		private WrestlerData baseWrestlerData;
 
 		public EventHandler<EventArgs> UpdateSpeed;
 		public EventHandler<MatchWresterGenericEventArgs> ReadyForMyTurn;
@@ -29,6 +26,8 @@ namespace PlayerWrestler {
 		public EventHandler<MatchWresterGenericEventArgs> IsSelected;
 		public EventHandler<MatchWresterGenericEventArgs> IsTargeted;
 		public EventHandler<MatchWresterGenericEventArgs> UnTargeted;
+
+		public EventHandler<MatchWrestlerActionRecievedEventArgs> ActionRecieved;
 
 		public float CurrentAgility {
 			get {
@@ -56,7 +55,7 @@ namespace PlayerWrestler {
 			}
 		}
 
-		public void InitializeWrestler(Match proto_SpeedTester, Proto_WrestlerData wrestlerData) {
+		public void InitializeWrestler(Match proto_SpeedTester, WrestlerData wrestlerData) {
 			proto_SpeedTester.UpdateSpeed += HandleSpeedUpdated;
 			baseWrestlerData = wrestlerData;
 			agilityHandler.Initialize(wrestlerData.Agility);
@@ -89,8 +88,10 @@ namespace PlayerWrestler {
 			}
 		}
 
-		public void HandleMatchAction(MatchAciton matchAction) {
-			actionHandler.HandleMatchAction(matchAction);
+		public void HandleMatchAction(MatchAciton newMatchAction) {
+			if (ActionRecieved != null) {
+				ActionRecieved(this, new MatchWrestlerActionRecievedEventArgs() { matchAciton = newMatchAction });
+			}
 		}
 
 		private void HandleSpeedUpdated(object sender, EventArgs e) {
@@ -99,7 +100,7 @@ namespace PlayerWrestler {
 			}
 		}
 
-		public void SendMyTurnEvent() {
+		public void SendReadyForMyTurnEvent() {
 			if (ReadyForMyTurn != null) {
 				ReadyForMyTurn(this, new MatchWresterGenericEventArgs() { wrestler = this });
 			}
@@ -125,6 +126,11 @@ namespace PlayerWrestler {
 	public class MatchWresterGenericEventArgs: EventArgs {
 		public MatchWrestler wrestler;
 	}
+
+	public class MatchWrestlerActionRecievedEventArgs : EventArgs {
+		public MatchAciton matchAciton;
+	}
+
 
 	public class MatchWrestler_Compairison_AgiStrDefRandom : IComparer<MatchWrestler> {
 
