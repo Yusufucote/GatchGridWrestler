@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 namespace PlayerWrestler {
 	public class MatchWrestlerActionHandler : MonoBehaviour {
@@ -26,16 +24,20 @@ namespace PlayerWrestler {
 		}
 
 		private void HandleEndTurn(object sender, MatchWresterGenericEventArgs e) {
-			EndTurn(this, e);
+			if (EndTurn != null) {
+				EndTurn(this, e);
+			}
 		}
 
 		private void HandleActionRecieved(object sender, MatchWrestlerActionRecievedEventArgs e) {
-			ActionRecieved(this, e);
+			if (ActionRecieved != null) {
+				ActionRecieved(this, e);
+			}
 		}
 
-		public void SendMatchActionUpdatedEvent(MatchWrestlerActionRecievedEventArgs matchAciton) {
+		public void SendMatchActionUpdatedEvent(MatchAciton updatedMatchAciton) {
 			if (ActionUpdated != null) {
-				ActionUpdated(this, matchAciton);
+				ActionUpdated(this, new MatchWrestlerActionRecievedEventArgs() { matchAciton = updatedMatchAciton });
 			}
 		}
 

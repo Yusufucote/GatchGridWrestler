@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 224288131272068168}
   - component: {fileID: 222266384857721834}
   - component: {fileID: 114724756497151218}
+  - component: {fileID: 114349233691370910}
   m_Layer: 5
   m_Name: BuffDebuffIcon
   m_TagString: Untagged
@@ -45,6 +46,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &114349233691370910
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1171598186067490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f06b225e7f6ce4c4da9b82d8ae18cd06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 114724756497151218}
+  text: {fileID: 114933658487956040}
 --- !u!114 &114724756497151218
 MonoBehaviour:
   m_ObjectHideFlags: 1

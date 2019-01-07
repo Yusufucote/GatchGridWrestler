@@ -9,9 +9,11 @@ namespace PlayerWrestler {
 		MatchWrestlerSpeedPoolHandler speedPoolHandler;
 
 		public override void HandleActionRecieved(object sender, MatchWrestlerActionRecievedEventArgs e) {
-			float newSpeedPoolValue = speedPoolHandler.CurrentSpeedPool + e.matchAciton.value;
-			speedPoolHandler.SetSpeedPoolValue(newSpeedPoolValue);
-			actionHandler.SendMatchActionComplete(new MatchAciton(MatchActionType.ChangeSpeedPoolByPercentOfTotal, 0));
+			if (e.matchAciton.acitonType == MatchActionType.ChangeSpeedPoolByPercentOfTotal) {
+				float newSpeedPoolValue = speedPoolHandler.CurrentSpeedPool + e.matchAciton.value;
+				speedPoolHandler.SetSpeedPoolValue(newSpeedPoolValue);
+				actionHandler.SendMatchActionComplete(new MatchAciton(MatchActionType.ChangeSpeedPoolByPercentOfTotal, 0));
+			}
 		}
 	}
 }

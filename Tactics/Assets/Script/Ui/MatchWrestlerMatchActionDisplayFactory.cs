@@ -22,7 +22,7 @@ namespace UI {
 		[SerializeField]
 		Sprite speedStatIcon;
 
-		Dictionary<MatchActionType, MatchActionIconDisplay> displays;
+		Dictionary<MatchActionType, MatchActionIconDisplay> displays = new Dictionary<MatchActionType, MatchActionIconDisplay>();
 
 		private void Start() {
 			actionHandler.ActionUpdated += HandleActionUpdated;
@@ -47,9 +47,13 @@ namespace UI {
 		private void HandleDebuffIcon(MatchAciton action) {
 			if (!displays.ContainsKey(action.acitonType)) {
 				MatchActionIconDisplay icon = Instantiate(iconDisplay);
+				icon.transform.SetParent(iconParent);
+				icon.transform.localPosition = Vector3.zero;
+				icon.transform.localScale = Vector3.one;
 
 				//TODO: have a better way to manage debuff sprites
 				icon.InitilizeIcon(speedStatIcon, (int)action.value, debuffColor);
+				displays.Add(action.acitonType, icon);
 			}
 		}
 
@@ -57,12 +61,15 @@ namespace UI {
 			if (displays.ContainsKey(e.matchAction.acitonType)) {
 				MatchActionIconDisplay iconDisplay = displays[e.matchAction.acitonType];
 				displays.Remove(e.matchAction.acitonType);
-				Destroy(iconDisplay);
+				Destroy(iconDisplay.gameObject);
 			}
 		}
 
 		private void HandleActionUpdated(object sender, MatchWrestlerActionRecievedEventArgs e) {
-			throw new NotImplementedException();
+			if (displays.ContainsKey(e.matchAciton.acitonType)) {
+				MatchActionIconDisplay iconDisplay = displays[e.matchAciton.acitonType];
+				iconDisplay.UpdateIconText((int)e.matchAciton.value);
+			}
 		}
 
 	}

@@ -14,16 +14,17 @@ namespace UI {
 
 		public void InitilizeIcon(Sprite sprite, int textValue, Color color) {
 			image.sprite = sprite;
-			if (textValue > 0) {
+			if (textValue > 1) {
 				text.text = textValue.ToString();
 			}
 			else {
 				text.enabled = false;
 			}
+			image.color = color;
 		}
 
 		public void UpdateIconText(int textValue) {
-			if (textValue > 0) {
+			if (textValue > 1) {
 				text.text = textValue.ToString();
 			}
 			else {

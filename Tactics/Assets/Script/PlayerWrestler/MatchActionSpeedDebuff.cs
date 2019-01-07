@@ -9,7 +9,7 @@ namespace PlayerWrestler {
 
 		int debuffCount;
 
-		public EventHandler<IncermentalMatchActionEventArgs> speedDebuffUpdated;
+		public EventHandler<MatchWrestlerActionRecievedEventArgs> speedDebuffUpdated;
 
 		private void Start() {
 			actionHandler.TurnStarted += HandleTurnStarted;
@@ -17,7 +17,7 @@ namespace PlayerWrestler {
 
 		private void HandleTurnStarted(object sender, MatchWresterGenericEventArgs e) {
 			if (debuffCount > 0) {
-				debuffCount -= debuffCount;
+				debuffCount--;
 				SendSpeedDebuffUpdated();
 				if (debuffCount == 0) {
 					agilityHandler.SetDebuffed(false);
@@ -27,22 +27,20 @@ namespace PlayerWrestler {
 		}
 
 		private void SendSpeedDebuffUpdated (){
-			if (speedDebuffUpdated != null) {
-				speedDebuffUpdated(this, new IncermentalMatchActionEventArgs() {
-					ActionType = MatchActionType.SpeedDebuff, 
-					Count = debuffCount
-				});
-			}
+			MatchAciton updatedMatchAction = new MatchAciton(MatchActionType.SpeedDebuff, debuffCount);
+			actionHandler.SendMatchActionUpdatedEvent(updatedMatchAction);
 		}
 
 		public override void HandleActionRecieved(object sender, MatchWrestlerActionRecievedEventArgs e) {
-			int value = (int) e.matchAciton.value;
-			if (value > 0) {
-				if (debuffCount < value) {
-					debuffCount = value;
-					SendSpeedDebuffUpdated();
+			if (e.matchAciton.acitonType == MatchActionType.SpeedDebuff) {
+				int value = (int) e.matchAciton.value;
+				if (value > 0) {
+					if (debuffCount < value) {
+						debuffCount = value;
+						SendSpeedDebuffUpdated();
+					}
+					agilityHandler.SetDebuffed(true);
 				}
-				agilityHandler.SetDebuffed(true);
 			}
 		}
 	}
