@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Abilities;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,10 +10,10 @@ namespace PlayerWrestler {
 		MatchWrestlerSpeedPoolHandler speedPoolHandler;
 
 		public override void HandleActionRecieved(object sender, MatchWrestlerActionRecievedEventArgs e) {
-			if (e.matchAciton.acitonType == MatchActionType.ChangeSpeedPoolByPercentOfTotal) {
+			if (e.matchAciton.acitonType == Keyword.TurnMeter_ChangeByPercentOfMax) {
 				float newSpeedPoolValue = speedPoolHandler.CurrentSpeedPool + e.matchAciton.value;
 				speedPoolHandler.SetSpeedPoolValue(newSpeedPoolValue);
-				actionHandler.SendMatchActionComplete(new MatchAciton(MatchActionType.ChangeSpeedPoolByPercentOfTotal, 0));
+				actionHandler.SendMatchActionComplete(new MatchAciton(Keyword.TurnMeter_ChangeByPercentOfMax, 0));
 			}
 		}
 	}

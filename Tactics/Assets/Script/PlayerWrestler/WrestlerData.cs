@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Abilities;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace PlayerWrestler {
@@ -11,14 +13,7 @@ namespace PlayerWrestler {
 		public float Move;
 		public float Defense;
 		public float Strength;
-
-		public WrestlerData(string name, float agility, int hp, float move, float defense, float strength) {
-			Name = name;
-			Agility = agility;
-			Hp = hp;
-			Move = move;
-			Defense = defense;
-			Strength = strength;
-		}
+		public AbilityScriptableObject BaseAttack;
+		public List<AbilityScriptableObject> SpecialAbilites;
 	}
 }
