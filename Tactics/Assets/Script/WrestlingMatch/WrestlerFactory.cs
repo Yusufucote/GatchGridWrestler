@@ -8,17 +8,23 @@ namespace WrestlingMatch {
 		MatchWrestler wrestlerPrefab;
 
 		[SerializeField]
-		Transform wrestlerParent;
+		Transform team1Transform;
 
-		public MatchWrestler InstantiateWrester(WrestlerData wrestlerData) {
+		[SerializeField]
+		Transform team2Transform;
+
+		public MatchWrestler InstantiateWrester(WrestlerData wrestlerData, int teamPosition) {
 			MatchWrestler matchWrestler = Instantiate(wrestlerPrefab);
-			matchWrestler.transform.SetParent(wrestlerParent);
+			if (teamPosition == 1) {
+				matchWrestler.transform.SetParent(team1Transform);
+			}
+			else {
+				matchWrestler.transform.SetParent(team2Transform);
+			}
 			matchWrestler.transform.localScale = Vector3.one;
 			matchWrestler.transform.localPosition = Vector3.zero;
 			return matchWrestler;
 		}
-
-
 
 	}
 }
