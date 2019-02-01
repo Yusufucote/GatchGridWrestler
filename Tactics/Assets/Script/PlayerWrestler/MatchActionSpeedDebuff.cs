@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Abilities;
+using System;
 using UnityEngine;
 
 namespace PlayerWrestler {
@@ -21,18 +22,18 @@ namespace PlayerWrestler {
 				SendSpeedDebuffUpdated();
 				if (debuffCount == 0) {
 					agilityHandler.SetDebuffed(false);
-					actionHandler.SendMatchActionComplete(new MatchAciton(MatchActionType.SpeedDebuff, 0));
+					actionHandler.SendMatchActionComplete(new MatchAciton(Keyword.Debuff_LowerSpeed, 0));
 				}
 			}
 		}
 
 		private void SendSpeedDebuffUpdated (){
-			MatchAciton updatedMatchAction = new MatchAciton(MatchActionType.SpeedDebuff, debuffCount);
+			MatchAciton updatedMatchAction = new MatchAciton(Keyword.Debuff_LowerSpeed, debuffCount);
 			actionHandler.SendMatchActionUpdatedEvent(updatedMatchAction);
 		}
 
 		public override void HandleActionRecieved(object sender, MatchWrestlerActionRecievedEventArgs e) {
-			if (e.matchAciton.acitonType == MatchActionType.SpeedDebuff) {
+			if (e.matchAciton.acitonType == Keyword.Debuff_LowerSpeed) {
 				int value = (int) e.matchAciton.value;
 				if (value > 0) {
 					if (debuffCount < value) {
@@ -46,7 +47,7 @@ namespace PlayerWrestler {
 	}
 
 	public class IncermentalMatchActionEventArgs: EventArgs {
-		public MatchActionType ActionType;
+		public Keyword ActionType;
 		public int Count;
 	}
 }

@@ -1,19 +1,16 @@
-﻿using System;
+﻿using Abilities;
+using System;
 
 namespace PlayerWrestler{
 	[Serializable]
 	public class MatchAciton {
-		public MatchActionType acitonType;
+		public Keyword acitonType;
 		public float value;
 
-		public MatchAciton(MatchActionType acitonType, float value) {
+		public MatchAciton(Keyword acitonType, float value) {
 			this.acitonType = acitonType;
 			this.value = value;
 		}
-	}
-
-	public enum MatchActionType  {
-		ChangeSpeedPoolByPercentOfTotal, SpeedDebuff 
 	}
 }
 

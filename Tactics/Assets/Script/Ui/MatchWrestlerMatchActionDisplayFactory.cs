@@ -1,4 +1,5 @@
-﻿using PlayerWrestler;
+﻿using Abilities;
+using PlayerWrestler;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace UI {
 		[SerializeField]
 		Sprite speedStatIcon;
 
-		Dictionary<MatchActionType, MatchActionIconDisplay> displays = new Dictionary<MatchActionType, MatchActionIconDisplay>();
+		Dictionary<Keyword, MatchActionIconDisplay> displays = new Dictionary<Keyword, MatchActionIconDisplay>();
 
 		private void Start() {
 			actionHandler.ActionUpdated += HandleActionUpdated;
@@ -33,10 +34,10 @@ namespace UI {
 
 		public override void HandleActionRecieved(object sender, MatchWrestlerActionRecievedEventArgs e) {
 			switch (e.matchAciton.acitonType) {
-				case MatchActionType.ChangeSpeedPoolByPercentOfTotal:
+				case Keyword.TurnMeter_ChangeByPercentOfMax:
 					//TODO: somethign to handle text woudl be ideal
 					break;
-				case MatchActionType.SpeedDebuff:
+				case Keyword.Debuff_LowerSpeed:
 					HandleDebuffIcon(e.matchAciton);
 					break;
 				default:
