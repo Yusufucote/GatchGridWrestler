@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Abilities;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using WrestlingMatch;
@@ -29,6 +30,13 @@ namespace PlayerWrestler {
 
 		public EventHandler<MatchWrestlerActionRecievedEventArgs> ActionRecieved;
 
+		private List<MatchAbility> matchAbilities = new List<MatchAbility>();
+		public List<MatchAbility> MatchAbilities {
+			get {
+				return matchAbilities;
+			}
+		}
+
 		public float CurrentAgility {
 			get {
 				return agilityHandler.CurrentAgility;
@@ -58,9 +66,17 @@ namespace PlayerWrestler {
 		public void InitializeWrestler(Match proto_SpeedTester, WrestlerData wrestlerData) {
 			proto_SpeedTester.UpdateSpeed += HandleSpeedUpdated;
 			baseWrestlerData = wrestlerData;
+			InitilizeMatchAbilities(wrestlerData);
 			agilityHandler.Initialize(wrestlerData.Agility);
 			if (WrestlerInitialized != null) {
 				WrestlerInitialized(this, new MatchWresterGenericEventArgs() { wrestler = this });
+			}
+		}
+
+		private void InitilizeMatchAbilities(WrestlerData wrestlerData) {
+			foreach (var abilitySO in wrestlerData.SpecialAbilites) {
+				MatchAbility newMatchAbility = new MatchAbility(abilitySO.abilitity, this);
+				matchAbilities.Add(newMatchAbility);
 			}
 		}
 
