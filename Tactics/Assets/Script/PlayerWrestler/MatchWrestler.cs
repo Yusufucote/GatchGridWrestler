@@ -6,69 +6,89 @@ using WrestlingMatch;
 namespace PlayerWrestler {
 	public class MatchWrestler : MonoBehaviour {
 
-		private float speedBank;
-		private Proto_WrestlerData baseWrestlerData;
 
-		public EventHandler<WrestlerSpeedUpdatedEventArgs> SpeedUpdated;
-		public EventHandler<MatchWresterGenericEventArgs> MyTurn;
+		private MatchWrestlerAgilityHandler _agilityHandler;
+		private MatchWrestlerSpeedPoolHandler _speedPoolHandler;
+		private InMatchWrestlingTargetDeterminator _targetDeterminator;
+		private PlayerMovementAction _playerMovementAction;
+		private WrestlerData _baseWrestlerData;
+
+		private float _speedBank;
+
+		public EventHandler<EventArgs> UpdateSpeed;
+		public EventHandler<MatchWresterGenericEventArgs> ReadyForMyTurn;
+		public EventHandler<MatchWresterGenericEventArgs> LostSpeed;
+		public EventHandler<MatchWresterGenericEventArgs> TurnStarted;
 		public EventHandler<MatchWresterGenericEventArgs> EndTurn;
 		public EventHandler<MatchWresterGenericEventArgs> WrestlerInitialized;
+		public EventHandler<MatchWresterGenericEventArgs> IsSelected;
+		public EventHandler<MatchWresterGenericEventArgs> IsTargeted;
+		public EventHandler<MatchWresterGenericEventArgs> UnTargeted;
 
-		public float CurrentAgility {
-			get {
-				return baseWrestlerData.Agility;
-			}
-		}
-		public float CurrentStrength {
-			get {
-				return baseWrestlerData.Strength;
-			}
-		}  
-		public float CurrentDefense {
-			get {
-				return baseWrestlerData.Defense;
-			}
-		}
-		public string Name {
-			get {
-				return baseWrestlerData.Name;
-			}
+		public float CurrentAgility => _agilityHandler.CurrentAgility;
+		public float CurrentStrength => _baseWrestlerData.Strength;
+		public float CurrentDefense => _baseWrestlerData.Defense;
+		public string Name => _baseWrestlerData.Name;
+		public float CurrentSpeedPool => _speedPoolHandler.CurrentSpeedPool;
+
+
+		public List<MatchWrestler> Team { get; internal set; }
+
+		public void InitializeWrestler(Match matchManager, WrestlerData wrestlerData, InMatchWrestlingTargetDeterminator targetDeterminator, Ring ring, RingPosition startingPosition) {
+			matchManager.UpdateSpeed += HandleSpeedUpdated;
+
+			_baseWrestlerData = wrestlerData;
+			_targetDeterminator = targetDeterminator;
+			//actions need to be handled by an action handler that gets init here.
+			_playerMovementAction = new PlayerMovementAction(transform, ring);
+			_agilityHandler = new MatchWrestlerAgilityHandler(wrestlerData.Agility);
+			_speedPoolHandler = new MatchWrestlerSpeedPoolHandler(_agilityHandler, this);
+
+
+			WrestlerInitialized?.Invoke(this, new MatchWresterGenericEventArgs() { wrestler = this });
 		}
 
-		public void InitializeWrestler(Match proto_SpeedTester, Proto_WrestlerData wrestlerData) {
-			proto_SpeedTester.UpdateSpeed += HandleSpeedUpdated;
-			baseWrestlerData = wrestlerData;
-			if (WrestlerInitialized != null) {
-				WrestlerInitialized(this, new MatchWresterGenericEventArgs() { wrestler = this });
-			}
-		}
 
 		public void EndTurnMyTurn() {
-			if (EndTurn != null) {
-				EndTurn(this, new MatchWresterGenericEventArgs() {wrestler = this});
+			EndTurn?.Invoke(this, new MatchWresterGenericEventArgs() { wrestler = this });
+		}
+
+		public void BeTargeted() {
+			IsTargeted?.Invoke(this, new MatchWresterGenericEventArgs() { wrestler = this });
+		}
+
+		public void BeUnTargeted() {
+			UnTargeted?.Invoke(this, new MatchWresterGenericEventArgs() { wrestler = this });
+		}
+
+		public void SendIsSelectedEventArgs() {
+			IsSelected?.Invoke(this, new MatchWresterGenericEventArgs() { wrestler = this });
+		}
+
+
+		private void HandleNewTarget(object sender, MatchWresterGenericEventArgs e) {
+			if (_targetDeterminator != null) {
+				_targetDeterminator.NewTarget -= HandleNewTarget;
 			}
-			speedBank = 0;
-			SendSpeedUpdatedEvent();
+
+			//annouce Using Ability
+			//TryingToUseAbility?.Invoke(this, new MatchWrestlerMatchAbilityEventArgs() { matchAbility = currentMatchAbility });
 		}
 
 		private void HandleSpeedUpdated(object sender, EventArgs e) {
-			speedBank += baseWrestlerData.Agility;
-			SendSpeedUpdatedEvent();
-			if (speedBank >= 100) {
-				SendMyTurnEvent();
-			}
+			UpdateSpeed?.Invoke(this, EventArgs.Empty);
 		}
 
-		private void SendMyTurnEvent() {
-			if (MyTurn != null) {
-				MyTurn(this, new MatchWresterGenericEventArgs() { wrestler = this });
-			}
+		public void SendReadyForMyTurnEvent() {
+			ReadyForMyTurn?.Invoke(this, new MatchWresterGenericEventArgs() { wrestler = this });
 		}
 
-		private void SendSpeedUpdatedEvent() {
-			if (SpeedUpdated != null) {
-				SpeedUpdated(this, new WrestlerSpeedUpdatedEventArgs() { WrestlerSpeed = speedBank });
-			}
+		public void SendLostSpeedEvent() {
+			LostSpeed?.Invoke(this, new MatchWresterGenericEventArgs() { wrestler = this });
+		}
+
+		public void StartTurn() {
+			TurnStarted?.Invoke(this, new MatchWresterGenericEventArgs() { wrestler = this });
 		}
 	}
 

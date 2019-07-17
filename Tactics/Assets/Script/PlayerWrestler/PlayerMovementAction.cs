@@ -1,59 +1,49 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UiKitchen;
 using System.Collections.Generic;
 
-public class PlayerMovementAction : MonoBehaviour, IPlayerAction
+public class PlayerMovementAction 
 {
-	[SerializeField]
-	Transform playerRoot;
+	private Transform _playerRoot;
+	private Ring _ring;
+	private RingPosition _currentRingPosition;
+	private List<RingPosition> _currentlySelectedRingPositions = new List<RingPosition>();
 
-	private Ring ring;
-
-	RingPosition currentRingPosition;
-	List<RingPosition> currentlySelectedRingPositions;
-	InputManager inputManager;
-
-	internal void Initialize(Ring Newring, InputManager newInputManager)
-	{
-		currentlySelectedRingPositions = new List<RingPosition>();
-		ring = Newring;
-		inputManager = newInputManager;
-
-		inputManager.horizontalButtonPressed += HandleOnHorizontalButtonPressed;
-		inputManager.verticalButtonPressed += HandleOnVerticleButtonPressed;
+	public PlayerMovementAction(Transform playerRoot, Ring ring) {
+		_playerRoot = playerRoot;
+		_ring = ring;
 	}
 
 	private void HandleOnVerticleButtonPressed(object sender, VerticalButtonPressedEventArgs e)
 	{
 		if (e.direction  == UpDownEnum.Up) {
-			Vector2 destinationVector = new Vector2(currentRingPosition.Position.x, currentRingPosition.Position.y + 1);
+			Vector2 destinationVector = new Vector2(_currentRingPosition.Position.x, _currentRingPosition.Position.y + 1);
 			HandleMoveToDestinationVector(destinationVector);
 		}
 		else {
-			Vector2 destinationVector = new Vector2(currentRingPosition.Position.x, currentRingPosition.Position.y - 1);
+			Vector2 destinationVector = new Vector2(_currentRingPosition.Position.x, _currentRingPosition.Position.y - 1);
 			HandleMoveToDestinationVector(destinationVector);
 		}
 	}
 
 	private void HandleOnHorizontalButtonPressed(object sender, HorizontalButtonPressedEventArgs e)
 	{
+		
 		if (e.direction == LeftRightEnum.Left) {
-			Vector2 destinationVector = new Vector2(currentRingPosition.Position.x - 1, currentRingPosition.Position.y);
+			Vector2 destinationVector = new Vector2(_currentRingPosition.Position.x - 1, _currentRingPosition.Position.y);
 			HandleMoveToDestinationVector(destinationVector);
 		}
 		else {
-			Vector2 destinationVector = new Vector2(currentRingPosition.Position.x + 1, currentRingPosition.Position.y);
+			Vector2 destinationVector = new Vector2(_currentRingPosition.Position.x + 1, _currentRingPosition.Position.y);
 			HandleMoveToDestinationVector(destinationVector);
 		}
 	}
 
 	private void HandleMoveToDestinationVector(Vector2 destinationVector)
 	{
-		RingPosition destanation = ring.GetRingPosition(destinationVector);
+		RingPosition destanation = _ring.GetRingPosition(destinationVector);
 		if (destanation != null) {
-			playerRoot.position = destanation.Transform.position;
-			currentRingPosition = destanation;
+			_playerRoot.position = destanation.Transform.position;
+			_currentRingPosition = destanation;
 		}
 		else {
 			CheckCurrentPosition();
@@ -62,7 +52,7 @@ public class PlayerMovementAction : MonoBehaviour, IPlayerAction
 
 	private void CheckCurrentPosition()
 	{
-		switch (currentRingPosition.RingPositionType) {
+		switch (_currentRingPosition.RingPositionType) {
 			case RingPositionType.None:
 				Debug.Log("Something is not quite right");
 				break;
@@ -70,8 +60,8 @@ public class PlayerMovementAction : MonoBehaviour, IPlayerAction
 				HandleRopeBounce();
 				break;
 			case RingPositionType.Croner:
-				currentRingPosition.GetTurnBuckleTransform();
-				playerRoot.position = new Vector3(currentRingPosition.Transform.position.x - 50, currentRingPosition.Transform.position.y + 50, currentRingPosition.Transform.position.z);
+				_currentRingPosition.GetTurnBuckleTransform();
+				_playerRoot.position = new Vector3(_currentRingPosition.Transform.position.x - 50, _currentRingPosition.Transform.position.y + 50, _currentRingPosition.Transform.position.z);
 				break;
 			default:
 				break;
@@ -80,31 +70,29 @@ public class PlayerMovementAction : MonoBehaviour, IPlayerAction
 
 	private void HandleRopeBounce()
 	{
-		if (currentRingPosition.Position.x == 0) {
-			Vector2 destinationVector = new Vector2(currentRingPosition.Position.x + 2, currentRingPosition.Position.y);
+		if (_currentRingPosition.Position.x == 0) {
+			Vector2 destinationVector = new Vector2(_currentRingPosition.Position.x + 2, _currentRingPosition.Position.y);
 			HandleMoveToDestinationVector(destinationVector);
 		}
-		if (currentRingPosition.Position.x == 5) {
-			Vector2 destinationVector = new Vector2(currentRingPosition.Position.x - 2, currentRingPosition.Position.y);
+		if (_currentRingPosition.Position.x == 5) {
+			Vector2 destinationVector = new Vector2(_currentRingPosition.Position.x - 2, _currentRingPosition.Position.y);
 			HandleMoveToDestinationVector(destinationVector);
 		}
-		if (currentRingPosition.Position.y == 0) {
-			Vector2 destinationVector = new Vector2(currentRingPosition.Position.x, currentRingPosition.Position.y + 2);
+		if (_currentRingPosition.Position.y == 0) {
+			Vector2 destinationVector = new Vector2(_currentRingPosition.Position.x, _currentRingPosition.Position.y + 2);
 			HandleMoveToDestinationVector(destinationVector);
 		}
-		if (currentRingPosition.Position.y == 5) {
-			Vector2 destinationVector = new Vector2(currentRingPosition.Position.x, currentRingPosition.Position.y - 2);
+		if (_currentRingPosition.Position.y == 5) {
+			Vector2 destinationVector = new Vector2(_currentRingPosition.Position.x, _currentRingPosition.Position.y - 2);
 			HandleMoveToDestinationVector(destinationVector);
 		}
 	}
 
 	public RingPosition SetStartingPosition(Vector2 ringPosition)
 	{
-		RingPosition startingRingPosition = ring.GetRingPosition(ringPosition);
-		playerRoot.position = startingRingPosition.Transform.position;
-		currentRingPosition = startingRingPosition;
+		RingPosition startingRingPosition = _ring.GetRingPosition(ringPosition);
+		_playerRoot.position = startingRingPosition.Transform.position;
+		_currentRingPosition = startingRingPosition;
 		return startingRingPosition;
 	}
-
-
 }
