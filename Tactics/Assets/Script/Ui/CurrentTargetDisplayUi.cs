@@ -15,6 +15,7 @@ namespace UI {
 		[SerializeField]
 		Text nameDisplayText;
 
+
 		private void Awake() {
 			nameDisplayText.text = "";
 			targetDeterminator.NewTarget += HandleNewTarget;

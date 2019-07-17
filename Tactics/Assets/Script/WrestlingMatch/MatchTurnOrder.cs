@@ -5,22 +5,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace WrestlingMatch {
-	public class MatchTurnOrder : MonoBehaviour {
+	public class MatchTurnOrder {
 
-		List<MatchWrestler> turnOrder = new List<MatchWrestler>();
+		private List<MatchWrestler> _turnOrder = new List<MatchWrestler>();
 
 		public EventHandler<MatchWresterGenericEventArgs> NewWrestlersTurn;
 		public EventHandler<EventArgs> CurrentTurnDone;
 		public EventHandler<EventArgs> TurnSequenceDone;
 
 		public void AddWrestlerToTurnQue(MatchWrestler wrestler) {
-			turnOrder.Add(wrestler);
+			_turnOrder.Add(wrestler);
 			wrestler.LostSpeed += HandleWrestlerLostSpeed;
 		}
 
 		private void HandleWrestlerLostSpeed(object sender, MatchWresterGenericEventArgs e) {
-			if (turnOrder.Count > 1) {
-				turnOrder.Remove(e.wrestler);
+			if (_turnOrder.Count > 1) {
+				_turnOrder.Remove(e.wrestler);
 			}
 			else {
 				EndCurrentTurn();
@@ -33,20 +33,18 @@ namespace WrestlingMatch {
 		}
 
 		private void NextTurn() {
-			if (NewWrestlersTurn != null) {
-				NewWrestlersTurn(this, new MatchWresterGenericEventArgs() { wrestler = turnOrder[0] });
-			}
-			turnOrder[0].StartTurn();
+			NewWrestlersTurn?.Invoke(this, new MatchWresterGenericEventArgs() { wrestler = _turnOrder[0] });
+			_turnOrder[0].StartTurn();
 		}
 
 		public void EndCurrentTurn() {
-			if (turnOrder.Count > 0) {
-				turnOrder[0].EndTurnMyTurn();
-				turnOrder.RemoveAt(0);
+			if (_turnOrder.Count > 0) {
+				_turnOrder[0].EndTurnMyTurn();
+				_turnOrder.RemoveAt(0);
 				if (CurrentTurnDone != null) {
 					CurrentTurnDone(this, EventArgs.Empty);
 				}
-				if (turnOrder.Count > 0) {
+				if (_turnOrder.Count > 0) {
 					NextTurn();
 				}
 				else {
@@ -59,7 +57,7 @@ namespace WrestlingMatch {
 
 		private void SortTurnList() {
 			MatchWrestler_Compairison_AgiStrDefRandom sorter = new MatchWrestler_Compairison_AgiStrDefRandom();
-			turnOrder.Sort(sorter);
+			_turnOrder.Sort(sorter);
 		}
 
 	}

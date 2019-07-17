@@ -1,5 +1,6 @@
 ﻿using PlayerWrestler;
 using UnityEngine;
+using WrestlingRing;
 
 namespace WrestlingMatch {
 	public class WrestlerFactory : MonoBehaviour {
@@ -8,22 +9,60 @@ namespace WrestlingMatch {
 		MatchWrestler wrestlerPrefab;
 
 		[SerializeField]
-		Transform team1Transform;
+		TeamStartingPositions _teamOne;
 
 		[SerializeField]
-		Transform team2Transform;
+		TeamStartingPositions _teamTwo;
 
-		public MatchWrestler InstantiateWrester(WrestlerData wrestlerData, int teamPosition) {
+		[SerializeField]
+		TeamStartingPositions _teamThree;
+
+		[SerializeField]
+		TeamStartingPositions _teamFour;
+
+
+
+		public MatchWrestler InstantiateWrester(WrestlerData wrestlerData, int teamNumber, int positionInTeam,
+			Match matchManager, InMatchWrestlingTargetDeterminator targetDeterminator, Ring ring) {
+
 			MatchWrestler matchWrestler = Instantiate(wrestlerPrefab);
-			if (teamPosition == 1) {
-				matchWrestler.transform.SetParent(team1Transform);
+
+			RingPosition startingPosition = null; 
+			switch (teamNumber) {
+				case 0:
+					startingPosition = GetStartingRingPosition(_teamOne, positionInTeam);
+					break;
+				case 1:
+					startingPosition = GetStartingRingPosition(_teamTwo, positionInTeam);
+					break;
+				case 2:
+					startingPosition = GetStartingRingPosition(_teamThree, positionInTeam);
+					break;
+				case 3:
+					startingPosition = GetStartingRingPosition(_teamFour, positionInTeam);
+					break;
+				default:
+					break;
 			}
-			else {
-				matchWrestler.transform.SetParent(team2Transform);
-			}
-			matchWrestler.transform.localScale = Vector3.one;
-			matchWrestler.transform.localPosition = Vector3.zero;
+
+			matchWrestler.InitializeWrestler(matchManager, wrestlerData, targetDeterminator, ring, startingPosition);
+;
 			return matchWrestler;
+		}
+
+		private RingPosition GetStartingRingPosition(TeamStartingPositions teamPos, int positionInTeam) {
+			switch (positionInTeam) {
+				case 0:
+					return teamPos.PositionOne;
+				case 1:
+					return teamPos.PositionTwo;
+				case 2:
+					return teamPos.PositionThree;
+				default:
+					Debug.Log("NO SUCH POSITION IN TEAM");
+					return null;
+			}
+
 		}
 
 	}

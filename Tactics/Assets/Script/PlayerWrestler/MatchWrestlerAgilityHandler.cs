@@ -4,30 +4,29 @@ using UnityEngine;
 
 
 namespace PlayerWrestler {
-	public class MatchWrestlerAgilityHandler : AbstractMatchWrestlerStatHandler<float> {
+	public class MatchWrestlerAgilityHandler  {
 
-		[Range(0,1)]
-		[SerializeField]
-		float speedDebuffPercent;
+		private float speedDebuffPercent  = 0.25f;
 
-		private float baseAgility;
+		private float _baseAgility;
 		public float CurrentAgility {
 			get {
 				if (statIsDebuffed) {
-					float debuffAmount = (baseAgility * speedDebuffPercent);
-					return baseAgility - debuffAmount;
+					float debuffAmount = (_baseAgility * speedDebuffPercent);
+					return _baseAgility - debuffAmount;
 				}
 				else {
-					return baseAgility;
+					return _baseAgility;
 				}
 			}
 		}
 
 		bool statIsDebuffed;
 
-		public override void Initialize(float baseStatValue) {
-			baseAgility = baseStatValue;
+		public MatchWrestlerAgilityHandler(float baseAgility) {
+			_baseAgility = baseAgility;
 		}
+
 
 		public void SetDebuffed(bool value) {
 			statIsDebuffed = value;

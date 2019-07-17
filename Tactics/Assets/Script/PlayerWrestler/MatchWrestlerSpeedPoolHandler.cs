@@ -4,13 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace PlayerWrestler {
-	public class MatchWrestlerSpeedPoolHandler : MonoBehaviour {
+	public class MatchWrestlerSpeedPoolHandler {
 
-		[SerializeField]
-		MatchWrestlerAgilityHandler agilityHandler;
-
-		[SerializeField]
-		MatchWrestler wrestler;
+		private MatchWrestlerAgilityHandler _agilityHandler;
+		private MatchWrestler _wrestler;
 
 		private float speedPool = 0f;
 		public float CurrentSpeedPool {
@@ -21,9 +18,11 @@ namespace PlayerWrestler {
 
 		public EventHandler<WrestlerSpeedUpdatedEventArgs> SpeedUpdated;
 
-		private void Awake() {
-			wrestler.UpdateSpeed += HandleUpdateSpeed;
-			wrestler.EndTurn += HandleEndTurn;
+		public MatchWrestlerSpeedPoolHandler(MatchWrestlerAgilityHandler agilityHandler, MatchWrestler wrestler) {
+			_agilityHandler = agilityHandler;
+			_wrestler = wrestler;
+			_wrestler.UpdateSpeed += HandleUpdateSpeed;
+			_wrestler.EndTurn += HandleEndTurn;
 		}
 
 		public void SetSpeedPoolValue(float value) {
@@ -34,7 +33,7 @@ namespace PlayerWrestler {
 				value = 100;
 			}
 			if (value < speedPool) {
-				wrestler.SendLostSpeedEvent();
+				_wrestler.SendLostSpeedEvent();
 			}
 			
 			speedPool = value;
@@ -42,10 +41,10 @@ namespace PlayerWrestler {
 		}
 
 		private void HandleUpdateSpeed(object sender, EventArgs e) {
-			speedPool += agilityHandler.CurrentAgility;
+			speedPool += _agilityHandler.CurrentAgility;
 			SendSpeedUpdatedEvent();
 			if (speedPool >= 100) {
-				wrestler.SendReadyForMyTurnEvent();
+				_wrestler.SendReadyForMyTurnEvent();
 			}
 		}
 
@@ -55,9 +54,11 @@ namespace PlayerWrestler {
 		}
 
 		private void SendSpeedUpdatedEvent() {
-			if (SpeedUpdated != null) {
-				SpeedUpdated(this, new WrestlerSpeedUpdatedEventArgs() { WrestlerSpeed = speedPool });
-			}
+			SpeedUpdated?.Invoke(this, new WrestlerSpeedUpdatedEventArgs() { WrestlerSpeed = speedPool });
+		}
+
+		~MatchWrestlerSpeedPoolHandler() {
+			Debug.Log("Deconstructer");
 		}
 	}
 }

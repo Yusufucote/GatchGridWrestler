@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using PlayerWrestler;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,10 +13,18 @@ namespace UI {
 		[SerializeField]
 		MatchTurnOrder matchTurnOrder;
 
-		MatchWrestler currentTurn;
+		[SerializeField]
+
+
+		private MatchWrestler currentTurn;
 
 		private void Start() {
 			matchTurnOrder.NewWrestlersTurn += HandleNewWrestlersTurn;
+			matchTurnOrder.CurrentTurnDone += HandleMatchTurnOrderTurnOver;
+		}
+
+		private void HandleMatchTurnOrderTurnOver(object sender, EventArgs e) {
+			//buttongs need ot hide.
 		}
 
 		private void HandleNewWrestlersTurn(object sender, MatchWresterGenericEventArgs e) {

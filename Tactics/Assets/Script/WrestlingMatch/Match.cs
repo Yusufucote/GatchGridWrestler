@@ -8,19 +8,17 @@ namespace WrestlingMatch {
 	public class Match : MonoBehaviour {
 
 		[SerializeField]
-		Team team1;
+		Team[] _teams;
 
 		[SerializeField]
-		Team team2;
+		WrestlerFactory _wrestlerFactory;
+
 
 		[SerializeField]
-		WrestlerFactory wrestlerFactory;
+		InMatchWrestlingTargetDeterminator _targetDeterminator;
 
 		[SerializeField]
-		MatchTurnOrder turnOrder;
-
-		[SerializeField]
-		InMatchWrestlingTargetDeterminator targetDeterminator;
+		Ring _ring;
 
 		private Dictionary<string, MatchWrestler> matchMrestlers = new Dictionary<string, MatchWrestler>();
 		public Dictionary<string, MatchWrestler> MatchMrestlers {
@@ -29,6 +27,7 @@ namespace WrestlingMatch {
 			}
 		}
 
+
 		private bool someonesTurn;
 		
 		Coroutine turnStarter;
@@ -36,41 +35,47 @@ namespace WrestlingMatch {
 		public EventHandler<EventArgs> UpdateSpeed;
 		public EventHandler<MatchWrestlerRosterEventArgs> WrestlerRosterUpated;
 
-		void Start() {
-			turnOrder.TurnSequenceDone += HandleTurnsDone;
+		private MatchTurnOrder _turnOrder;
 
-			CreateTeam(team1.WrestlingTeam, 1);
-			CreateTeam(team2.WrestlingTeam, 2);
-
-			SendRosterUpdatedEventArgs();
-			targetDeterminator.Initialize(matchMrestlers);
+		private void Awake() {
+			_turnOrder = new MatchTurnOrder();
 		}
 
-		private void CreateTeam(List<WrestlerDataScriptableObject> wrestlers, int teamPosition) {
-			foreach (var wrestlerSO in wrestlers) {
-				MatchWrestler matchWrestler = wrestlerFactory.InstantiateWrester(wrestlerSO.wrestlerData, teamPosition);
-				matchMrestlers.Add(matchWrestler.GetHashCode().ToString(), matchWrestler);
-				matchWrestler.InitializeWrestler(this, wrestlerSO.wrestlerData);
-				RegisterForWrestlerEvents(matchWrestler);
+		void Start() {
+			_turnOrder.TurnSequenceDone += HandleTurnsDone;
+
+			for (int i = 0; i < _teams.Length; i++) {
+				CreateTeam(_teams[i].WrestlingTeam, i);
 			}
+			SendRosterUpdatedEventArgs();
+			_targetDeterminator.Initialize(matchMrestlers);
+		}
+
+		private List<MatchWrestler> CreateTeam(List<WrestlerDataScriptableObject> wrestlers, int teamPosition) {
+			List<MatchWrestler> teamList = new List<MatchWrestler>();
+
+			for (int i = 0; i < wrestlers.Count; i++) {
+				MatchWrestler matchWrestler = _wrestlerFactory.InstantiateWrester(wrestlers[i].wrestlerData, teamPosition, i, this, _targetDeterminator, _ring);
+				matchMrestlers.Add(matchWrestler.GetHashCode().ToString(), matchWrestler);
+				RegisterForWrestlerEvents(matchWrestler);
+				teamList.Add(matchWrestler);
+			}
+			return teamList;
 		}
 
 		private void SendRosterUpdatedEventArgs() {
-			if (WrestlerRosterUpated != null) {
-				WrestlerRosterUpated(this, new MatchWrestlerRosterEventArgs() { Wrestlers = matchMrestlers });
-			}
+			WrestlerRosterUpated?.Invoke(this, new MatchWrestlerRosterEventArgs() { Wrestlers = matchMrestlers });
 		}
 
+		//make an ienumerator;
 		private void Update() {
 			if (!someonesTurn) {
-				if (UpdateSpeed != null) {
-					UpdateSpeed(this, EventArgs.Empty);
-				}
+				UpdateSpeed?.Invoke(this, EventArgs.Empty);
 			}
 		}
 
 		private void RegisterForWrestlerEvents(MatchWrestler matchWrestler) {
-			matchWrestler.ReadyForMyTurn += HandleWrestlerTurn;
+			matchWrestler.ReadyForMyTurn += HandleReadyFoMyTurn;
 			matchWrestler.EndTurn += HandleWrestlerEndTurn;
 		}
 
@@ -78,8 +83,8 @@ namespace WrestlingMatch {
 			
 		}
 
-		private void HandleWrestlerTurn(object sender, MatchWresterGenericEventArgs e) {
-			turnOrder.AddWrestlerToTurnQue(e.wrestler);
+		private void HandleReadyFoMyTurn(object sender, MatchWresterGenericEventArgs e) {
+			_turnOrder.AddWrestlerToTurnQue(e.wrestler);
 			if (turnStarter == null) {
 				turnStarter = StartCoroutine(StartTurnSequanceOnNextFrame());
 			}
@@ -88,7 +93,7 @@ namespace WrestlingMatch {
 
 		private IEnumerator StartTurnSequanceOnNextFrame() {
 			yield return new WaitForEndOfFrame();
-			turnOrder.StartTurnSequance();
+			_turnOrder.StartTurnSequance();
 			turnStarter = null;
 		}
 

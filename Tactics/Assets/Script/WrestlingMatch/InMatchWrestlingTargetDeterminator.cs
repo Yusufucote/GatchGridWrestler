@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using PlayerWrestler;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace WrestlingMatch {
 	public class InMatchWrestlingTargetDeterminator : MonoBehaviour {
@@ -11,10 +9,12 @@ namespace WrestlingMatch {
 		[SerializeField]
 		MatchTurnOrder turnOrder;
 
-		private Dictionary<string, MatchWrestler> matchRoster;
-		private bool isSomeOnesTurn;
-		private MatchWrestler whosTurn;
-		private MatchWrestler isTargeted;
+		private Dictionary<string, MatchWrestler> _matchRoster;
+		private bool _isSomeOnesTurn;
+		private MatchWrestler _whosTurn;
+		private MatchWrestler _isTargeted;
+		private Team _team1;
+		private Team _team2;
 
 		public EventHandler<EventArgs> RemovedTarget;
 		public EventHandler<MatchWresterGenericEventArgs> NewTarget;
@@ -26,49 +26,58 @@ namespace WrestlingMatch {
 		}
 
 		public void Initialize(Dictionary<string, MatchWrestler> matchRoster) {
+
 			foreach (var wrestler in matchRoster.Values) {
 				wrestler.IsSelected += HandleWrestlerIsSelected;
 			}
 		}
 
+
+
 		private void HandleWrestlerIsSelected(object sender, MatchWresterGenericEventArgs e) {
-			if (whosTurn != null) {
-				if (isTargeted != null) {
-					isTargeted.BeUnTargeted();
-				}
-				isTargeted = e.wrestler;
-				isTargeted.BeTargeted();
-				if (NewTarget != null) {
-					NewTarget(this, e);
-				}
+			if (_whosTurn != null) {
+				UnTarget();
+
+				SetNewTarget(e);
 			}
+		}
+
+		private void SetNewTarget(MatchWresterGenericEventArgs e) {
+			_isTargeted = e.wrestler;
+			_isTargeted.BeTargeted();
+			NewTarget?.Invoke(this, e);
+		}
+		private void SetNewTarget(MatchWrestler wrestler) {
+			_isTargeted = wrestler;
+			_isTargeted.BeTargeted();
+			NewTarget?.Invoke(this, new MatchWresterGenericEventArgs() { wrestler = wrestler });
 		}
 
 		private void HandleNewWrestlersTurn(object sender, MatchWresterGenericEventArgs e) {
-			whosTurn = e.wrestler;
+			_whosTurn = e.wrestler;
 		}
 
 		private void HandleCurrentTurnDone(object sender, EventArgs e) {
-			if (RemovedTarget != null) {
-				RemovedTarget(this, EventArgs.Empty);
-			}
-			whosTurn = null;
-			if (isTargeted != null) {
-				isTargeted.BeUnTargeted();
-				isTargeted = null;
-			}
+			RemovedTarget?.Invoke(this, EventArgs.Empty);
+
+			_whosTurn = null;
+			UnTarget();
 		}
 
 		private void HandleTurnsDone(object sender, EventArgs e) {
-			if (RemovedTarget != null) {
-				RemovedTarget(this, EventArgs.Empty);
-			}
-			whosTurn = null;
-			if (isTargeted != null) {
-				isTargeted.BeUnTargeted();
-				isTargeted = null;
-			}
+			RemovedTarget?.Invoke(this, EventArgs.Empty);
+
+			_whosTurn = null;
+			UnTarget();
 
 		}
+
+		private void UnTarget() {
+			if (_isTargeted != null) {
+				_isTargeted.BeUnTargeted();
+				_isTargeted = null;
+			}
+		}
+
 	}
 }

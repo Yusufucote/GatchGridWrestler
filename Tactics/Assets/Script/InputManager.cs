@@ -6,6 +6,8 @@ public class InputManager : MonoBehaviour {
 	public event EventHandler<HorizontalButtonPressedEventArgs> horizontalButtonPressed;
 	public event EventHandler<VerticalButtonPressedEventArgs> verticalButtonPressed;
 
+	public event EventHandler<EventArgs> iDidaThing;
+
 	void Update () {
 
 		if (Input.GetButtonDown("Horizontal")) {
@@ -16,7 +18,6 @@ public class InputManager : MonoBehaviour {
 		}
 
 	}
-
 
 	private void SendHoizontalButtonPressedEvent()
 	{
