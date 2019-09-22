@@ -6,7 +6,6 @@ using UnityEngine;
 namespace WrestlingMatch {
 	public class InMatchWrestlingTargetDeterminator : MonoBehaviour {
 
-		[SerializeField]
 		MatchTurnOrder turnOrder;
 
 		private Dictionary<string, MatchWrestler> _matchRoster;
@@ -20,16 +19,17 @@ namespace WrestlingMatch {
 		public EventHandler<MatchWresterGenericEventArgs> NewTarget;
 
 		private void Awake() {
-			turnOrder.NewWrestlersTurn += HandleNewWrestlersTurn;
-			turnOrder.TurnSequenceDone += HandleTurnsDone;
-			turnOrder.CurrentTurnDone += HandleCurrentTurnDone;
 		}
 
-		public void Initialize(Dictionary<string, MatchWrestler> matchRoster) {
+		public void Initialize(Dictionary<string, MatchWrestler> matchRoster, MatchTurnOrder matchTurnOrder) {
 
+			turnOrder = matchTurnOrder;
 			foreach (var wrestler in matchRoster.Values) {
 				wrestler.IsSelected += HandleWrestlerIsSelected;
 			}
+			turnOrder.NewWrestlersTurn += HandleNewWrestlersTurn;
+			turnOrder.TurnSequenceDone += HandleTurnsDone;
+			turnOrder.CurrentTurnDone += HandleCurrentTurnDone;
 		}
 
 
