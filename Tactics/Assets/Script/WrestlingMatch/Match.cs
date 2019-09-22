@@ -48,7 +48,7 @@ namespace WrestlingMatch {
 				CreateTeam(_teams[i].WrestlingTeam, i);
 			}
 			SendRosterUpdatedEventArgs();
-			_targetDeterminator.Initialize(matchMrestlers);
+			_targetDeterminator.Initialize(matchMrestlers, _turnOrder);
 		}
 
 		private List<MatchWrestler> CreateTeam(List<WrestlerDataScriptableObject> wrestlers, int teamPosition) {

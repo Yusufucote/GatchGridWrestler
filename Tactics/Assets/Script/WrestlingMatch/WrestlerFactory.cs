@@ -45,6 +45,8 @@ namespace WrestlingMatch {
 					break;
 			}
 
+			//TODO: Set wrestlers position in the world here. 
+
 			matchWrestler.InitializeWrestler(matchManager, wrestlerData, targetDeterminator, ring, startingPosition);
 ;
 			return matchWrestler;

@@ -58,7 +58,10 @@ namespace PlayerWrestler {
 		}
 
 		~MatchWrestlerSpeedPoolHandler() {
-			Debug.Log("Deconstructer");
+			if (_wrestler != null) {
+				_wrestler.UpdateSpeed -= HandleUpdateSpeed;
+				_wrestler.EndTurn -= HandleEndTurn;
+			}
 		}
 	}
 }
